@@ -6,6 +6,7 @@ Vagrant.configure(2) do |config|
     config.vm.synced_folder ".", "/vagrant", disabled: true
 
     root_dir = '/vagrant'
+    linux_rsync_type = 'nfs'
     # NFS only works with libvirt
     config.vm.synced_folder "..", root_dir
 
@@ -18,11 +19,12 @@ Vagrant.configure(2) do |config|
 
         # use NFS
         override.vm.synced_folder "..", root_dir,
-            :nfs => true,
-            :nfs_version => 4,
-            :nfs_udp => false,
+            type: linux_rsync_type,
+            nfs_version: 4,
+            nfs_udp: false,
             # speedup NFS with custom options
-            :linux__nfs_options => ["rw", "no_subtree_check", "all_squash"]
+            linux__nfs_options: ["rw", "no_subtree_check", "all_squash"],
+            rsync__exclude: ".git/"
     end
 
     config.vm.provider "virtualbox" do |vbox, override|
